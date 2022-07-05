@@ -1,0 +1,26 @@
+{
+  "name": "funny-videos-backend",
+  "main": "index.js",
+  "scripts": {
+    "generate-key-pair-for-jwt": "openssl genrsa -out routers/middlewares/auth/PRIVATE_KEY 2048 && openssl rsa -in routers/middlewares/auth/PRIVATE_KEY -pubout > routers/middlewares/auth/PUBLIC_KEY",
+    "start": "node index start",
+    "dev": "nodemon index start",
+    "test": "mocha"
+  },
+  "author": "tClara",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "method-override": "^3.0.0",
+    "mongoose": "^6.4.2",
+    "response-time": "^2.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^9.2.0",
+    "nodemon": "^2.0.15"
+  }
+}
