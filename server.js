@@ -13,9 +13,11 @@ const routers = require('./routers');
 const app = express();
 const server = http.createServer(app);
 
+let mongooseConnect;
+
 app.use(
   responseTime((req, _, time) => {
-    logger.info(
+    console.log(
       `${req.ip} - ${req.method} ${req.originalUrl} ${req.protocol} - ${time}`
     );
   })
@@ -49,7 +51,7 @@ async function start(params) {
   while (!success) {
     try {
       // eslint-disable-next-line no-await-in-loop
-      await mongoose.connect(mongoURL);
+      mongooseConnect = await mongoose.connect(mongoURL);
       success = true;
     } catch (err) {
       // eslint-disable-next-line no-await-in-loop
@@ -76,6 +78,7 @@ async function start(params) {
 module.exports = {
   start,
   stop: (done) => {
+    mongooseConnect.connection.close();
     server.close(done);
   },
 };

@@ -30,5 +30,5 @@ module.exports = {
     },
   },
   clientDir: path.join(__dirname, '../../client/build'),
-  dbName: 'FunnyVideos',
+  dbName: 'funny_videos',
 };

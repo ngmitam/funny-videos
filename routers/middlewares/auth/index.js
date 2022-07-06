@@ -16,13 +16,14 @@ async function authenticateUser(email, password, req) {
     email,
   };
   let user;
-  const checkUser = () => {};
+
   user = await User.findOne(query).exec();
-  checkUser();
+  if (!user) throw new CustomError(10002);
 
   // We have a user for that username, test password
   const isMatch = user.comparePassword(password);
   if (isMatch) return user;
+  throw new CustomError(10001);
 }
 
 async function generateJWTokenWithUserData(userData, req) {
@@ -36,8 +37,8 @@ async function generateJWTokenWithUserData(userData, req) {
   };
 }
 
-async function generateJWToken(userId, password, req) {
-  const userData = await authenticateUser(userId, password, req);
+async function generateJWToken(email, password, req) {
+  const userData = await authenticateUser(email, password, req);
   return generateJWTokenWithUserData(userData, req);
 }
 
