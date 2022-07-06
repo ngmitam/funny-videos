@@ -52,6 +52,18 @@ describe('Auth test', () => {
     );
   });
 
+  it('should return Invalid email or password error_code 10001', async () => {
+    const res = await chai.request(SERVER_URL).post('/api/v1/auth/login').send({
+      email: '@@@@@',
+      password: 'password',
+    });
+    res.should.have.status(200);
+    res.body.should.have.property('error_code');
+    res.body.error_code.should.equal(10001);
+    res.body.should.have.property('error_message');
+    res.body.error_message.should.equal('Invalid email or password');
+  });
+
   it('should return User already exists error_code 10003', async () => {
     const res = await chai
       .request(SERVER_URL)
@@ -71,6 +83,18 @@ describe('Auth test', () => {
     const res = await chai.request(SERVER_URL).post('/api/v1/auth/login').send({
       email: 'user@email.com',
       password: 'wrong_password',
+    });
+    res.should.have.status(200);
+    res.body.should.have.property('error_code');
+    res.body.error_code.should.equal(10001);
+    res.body.should.have.property('error_message');
+    res.body.error_message.should.equal('Invalid email or password');
+  });
+
+  it('should return Invalid email or password error_code 10001', async () => {
+    const res = await chai.request(SERVER_URL).post('/api/v1/auth/login').send({
+      email: '@@@@@@@@',
+      password: 'password',
     });
     res.should.have.status(200);
     res.body.should.have.property('error_code');

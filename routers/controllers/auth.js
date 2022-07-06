@@ -1,3 +1,5 @@
+const validator = require('validator');
+
 const serverConfig = require('../../config/serverConfig');
 const authMiddleware = require('../middlewares/auth');
 const User = require('../../DB/models/User');
@@ -8,7 +10,7 @@ module.exports = {
     const email = req.body.email;
     const { password } = req.body;
 
-    if (!password) {
+    if (!email || !validator.isEmail(email) || !password) {
       throw new CustomError(10001);
     }
 
@@ -31,11 +33,17 @@ module.exports = {
     res.clearCookie(serverConfig.authentication.jwt.cookieId);
     res.json({});
   },
+
   async register(req, res, next) {
     let receivedData = req.body;
     try {
-      if (!receivedData.email) throw new CustomError(10001);
-      if (!receivedData.password) throw new CustomError(10001);
+      if (
+        !receivedData.email ||
+        !validator.isEmail(receivedData.email) ||
+        !receivedData.password
+      ) {
+        throw new CustomError(10001);
+      }
       if (typeof receivedData.password !== 'string')
         receivedData.password = receivedData.password.toString();
 
