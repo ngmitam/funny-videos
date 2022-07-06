@@ -7,6 +7,10 @@ const videoController = require('../controllers/video');
 
 router.get('/list', videoController.list);
 
-router.use(authController.ensureAuthenticated);
+router.post(
+  '/share',
+  authController.ensureAuthenticated,
+  videoController.share
+);
 
 module.exports = router;

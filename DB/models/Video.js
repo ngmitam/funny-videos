@@ -17,7 +17,7 @@ const VideoSchema = new mongoose.Schema({
           /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
         return YoutubeURLRegEx.test(url);
       },
-      message: (props) => `${props.value} is not a valid Youtube link!`,
+      message: (props) => `${props.value} is not a valid YouTube link!`,
     },
   },
 

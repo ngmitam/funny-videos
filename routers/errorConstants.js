@@ -4,5 +4,7 @@ module.exports = {
   10003: 'Email already exists',
   10004: 'Could not register user',
 
+  20001: 'Invalid YouTube video link',
+
   40004: 'Something went wrong',
 };
