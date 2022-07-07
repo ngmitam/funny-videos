@@ -3,7 +3,7 @@
   "main": "index.js",
   "scripts": {
     "generate-key-pair-for-jwt": "openssl genrsa -out routers/middlewares/auth/PRIVATE_KEY 2048 && openssl rsa -in routers/middlewares/auth/PRIVATE_KEY -pubout > routers/middlewares/auth/PUBLIC_KEY",
-    "start": "node index start",
+    "start": "npm run generate-key-pair-for-jwt && node index start",
     "dev": "nodemon index start",
     "test": "mocha"
   },
