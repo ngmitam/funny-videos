@@ -82,7 +82,7 @@ async function start(params) {
       error_data: err.error_data,
     });
   });
-  server.listen(params.port || 80, () => {
+  server.listen(params.port || serverConfig.env.PORT || 80, () => {
     console.log(`Server listening on port ${params.port || 80}`);
     if (params && params.done) params.done();
   });
