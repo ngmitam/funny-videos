@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../../../config/serverConfig');
 
-const User = require('../../../db/models/User');
+const User = require('../../../DB/models/User');
 
 const TokenGenerator = require('./localTokenGenerator');
 
