@@ -15,7 +15,17 @@ const Home = () => {
       try {
         const res = await videoClient.getList();
         const list = res?.data?.list || [];
-        dispatch(fetchListAction(list));
+        console.log(list);
+        dispatch(
+          fetchListAction(
+            list.map(({ email, url }) => {
+              return {
+                user: email,
+                videoURL: url,
+              };
+            })
+          )
+        );
       } catch (err) {
         console.log(err);
       }

@@ -1,13 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+
+import HomeIcon from '@mui/icons-material/Home';
+import { Grid, Typography } from '@mui/material';
+
 import {
   login as loginAction,
   logout as logoutAction,
 } from '../redux/reducers/user';
 
-import HomeIcon from '@mui/icons-material/Home';
-import { Grid, Typography } from '@mui/material';
+import LoginClient from '../rest_client/loginClient';
 
 import LoginForm from './LoginForm';
 import RightHeader from './RightHeader';
@@ -20,12 +23,25 @@ export default function Header() {
   const navigate = useNavigate();
 
   const authenticated = useIsAuthenticated();
-
-  const login = (email, password) => {
-    return dispatch(loginAction({ email, password }));
+  const loginClient = new LoginClient();
+  const login = async (email, password) => {
+    try {
+      let res = await loginClient.login(email, password);
+      if (res?.body?.error_code == 10002) {
+        const res2 = await loginClient.register(email, password);
+        if (res2?.body?.data) {
+          res = await loginClient.login(email, password);
+        }
+      }
+      if (res?.body?.data) dispatch(loginAction({ email, password }));
+      return;
+    } catch (err) {
+      console.log(err);
+    }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    await loginClient.logout();
     return dispatch(logoutAction());
   };
 

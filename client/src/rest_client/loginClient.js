@@ -22,4 +22,8 @@ export default class LoginClient extends BaseClient {
 
     return super.post(['register'], data);
   }
+
+  logout() {
+    return super.get(['logout']);
+  }
 }

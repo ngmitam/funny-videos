@@ -5,8 +5,8 @@ export default class VideoClient extends BaseClient {
     super(baseUrl);
   }
 
-  share(trip) {
-    return super.post(['share'], trip);
+  share(url) {
+    return super.post(['share'], { url });
   }
   getList() {
     return super.get(['list']);

@@ -4,18 +4,14 @@ import { Navigate } from 'react-router-dom';
 
 import { Grid, TextField, Button } from '@mui/material';
 
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { share as shareAction } from '../redux/reducers/video';
-
 import { useIsAuthenticated } from '../utils/authHooks';
+
+import VideoClient from '../rest_client/videoClient';
 
 const YoutubeURLRegEx =
   /^(?:https?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})(?:\S+)?$/;
 
 const Form = () => {
-  const dispatch = useDispatch();
-  const userEmail = useSelector((state) => state.user.email, shallowEqual);
-
   const [videoURL, setVideoURL] = useState('');
   const [videoURLError, setVideoURLError] = useState('');
   const navigate = useNavigate();
@@ -31,10 +27,13 @@ const Form = () => {
     }
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!videoURL) return;
 
-    dispatch(shareAction({ videoURL: videoURL, user: userEmail }));
+    const videoClient = new VideoClient();
+    const res = await videoClient.share(videoURL);
+    if (!res?.body?.data) return;
+    // dispatch(shareAction({ videoURL: videoURL, user: userEmail }));
     return navigate('/', { replace: true });
   };
 
