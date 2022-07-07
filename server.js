@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const responseTime = require('response-time');
+
 const serverConfig = require('./config/serverConfig');
 
 const routers = require('./routers');
@@ -57,6 +58,18 @@ async function start(params) {
       // eslint-disable-next-line no-await-in-loop
       await new Promise((resolve) => setTimeout(resolve, 1000));
     }
+  }
+
+  // use redis to cache request
+  if (serverConfig.env.REDIS_URL) {
+    const redis = require('redis');
+    const redisClient = redis.createClient({ url: serverConfig.env.REDIS_URL });
+    await redisClient.connect();
+
+    app.use('', (req, res, next) => {
+      req.redisClient = redisClient;
+      next();
+    });
   }
 
   routers(app);
