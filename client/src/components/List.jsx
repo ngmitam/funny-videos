@@ -2,7 +2,7 @@ import Item from './Item';
 
 import { Grid } from '@mui/material';
 
-const List = ({ data }) => {
+const List = ({ data = [] }) => {
   return (
     <Grid container direction='column'>
       {data.map((item, index) => {

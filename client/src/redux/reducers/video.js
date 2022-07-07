@@ -3,22 +3,12 @@ import { createSlice } from '@reduxjs/toolkit';
 const userSlice = createSlice({
   name: 'video',
   initialState: {
-    list: [
-      {
-        videoURL: 'https://youtu.be/bMknfKXIFA8',
-        user: 'admin@funnymovies.com',
-      },
-      {
-        videoURL: 'https://www.youtube.com/watch?v=ogI5Wtvo95w',
-        user: 'admin@funnymovies.com',
-      },
-      {
-        videoURL: 'https://www.youtube.com/watch?v=CEOrd6kZwOk',
-        user: 'admin@funnymovies.com',
-      },
-    ],
+    list: [],
   },
   reducers: {
+    fetchList: (state, action) => {
+      state.list = action.payload;
+    },
     share(state, action) {
       // push to first position of list
       state.list.unshift({
@@ -29,5 +19,5 @@ const userSlice = createSlice({
   },
 });
 const { actions, reducer } = userSlice;
-export const { share } = actions;
+export const { share, fetchList } = actions;
 export default reducer;
