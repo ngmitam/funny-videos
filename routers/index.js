@@ -7,4 +7,7 @@ module.exports = (app) => {
   app.use(`${constants.baseApi}/video`, videoRouter);
   // catches all next(new Error()) from previous rules, you can set res.status() before you call next(new Error())
   // eslint-disable-next-line
+
+  // Client side routing
+  require('./public')(app);
 };
