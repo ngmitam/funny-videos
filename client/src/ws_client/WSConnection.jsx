@@ -14,9 +14,15 @@ export default function Connection({ children }) {
 	useEffect(() => {
 		if (authenticated) {
 			const origin = window.location.origin;
-			const client = new W3CWebSocket(
-				origin.replace("http", "ws").split(":")[1]
-			);
+			let client;
+			try {
+				client = new W3CWebSocket(
+					origin.replace("http", "ws").split(":")[1]
+				);
+			} catch (error) {
+				console.error(error);
+				return;
+			}
 			client.onopen = () => {
 				setConnection(client);
 			};
