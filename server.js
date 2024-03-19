@@ -1,4 +1,5 @@
 const http = require("http");
+const webSocketServer = require("websocket").server;
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const compression = require("compression");
@@ -10,9 +11,13 @@ const responseTime = require("response-time");
 const serverConfig = require("./config/serverConfig");
 
 const routers = require("./routers");
+const { verifyJWToken } = require("./routers/middlewares/auth");
 
 const app = express();
 const server = http.createServer(app);
+const wsServer = new webSocketServer({
+	httpServer: server,
+});
 
 let mongooseConnect;
 
@@ -74,6 +79,48 @@ async function start(params) {
 			next();
 		});
 	}
+
+	// Stores all active connections in this object.
+	const clients = {};
+	// process WebSocket message
+	// broadcast message to all connected clients except sender
+	const broadcastMessage = (message, email) => {
+		for (const key in clients) {
+			if (key !== email) clients[key].connection.sendUTF(message);
+		}
+	};
+
+	// This code generates every time a user connects to the server
+	wsServer.on("request", async function (request) {
+		// get access token from request cookie
+		const accessToken = request.cookies.find((cookie) => {
+			return cookie.name === "access_token";
+		});
+		if (!accessToken) {
+			request.reject();
+			return;
+		}
+		// verify token
+		const decoded = await verifyJWToken(accessToken.value);
+		if (!decoded) {
+			request.reject();
+			return;
+		}
+
+		const userID = decoded.content.email;
+
+		const connection = request.accept(null, request.origin);
+		clients[userID] = {
+			connection,
+		};
+
+		connection.on("close", function (connection) {
+			// close user connection
+			delete clients[userID];
+		});
+	});
+
+	app.response.broadcastMessage = broadcastMessage;
 
 	routers(app);
 

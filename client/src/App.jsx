@@ -1,32 +1,39 @@
-import { Route, Routes } from 'react-router-dom';
-import { Container } from '@mui/material';
-import Header from './components/Header';
+import { Route, Routes } from "react-router-dom";
+import { Container } from "@mui/material";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import routes from './routes';
+import WSConnection from "./ws_client/WSConnection";
+import Header from "./components/Header";
+
+import routes from "./routes";
 
 function App() {
-  return (
-    <Container sx={{ margin: 'auto 10' }}>
-      {/* Header */}
-      <Header />
+	return (
+		<WSConnection>
+			<Container sx={{ margin: "auto 10" }}>
+				{/* Header */}
+				<Header />
 
-      {/* Content */}
-      <Container sx={{ marginTop: '20px' }}>
-        <Routes>
-          {routes.map((route, index) => {
-            return (
-              <Route
-                key={index}
-                path={route.path}
-                exact={route.exact}
-                element={route.main}
-              />
-            );
-          })}
-        </Routes>
-      </Container>
-    </Container>
-  );
+				{/* Content */}
+				<Container sx={{ marginTop: "20px" }}>
+					<Routes>
+						{routes.map((route) => {
+							return (
+								<Route
+									key={route.id} // Replace key={index} with a unique identifier from the route object
+									path={route.path}
+									exact={route.exact}
+									element={route.main}
+								/>
+							);
+						})}
+					</Routes>
+				</Container>
+				<ToastContainer />
+			</Container>
+		</WSConnection>
+	);
 }
 
 export default App;

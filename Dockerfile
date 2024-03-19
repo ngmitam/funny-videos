@@ -8,7 +8,7 @@
 
 ARG NODE_VERSION=21.4.0
 
-FROM node:${NODE_VERSION}-alpine as client
+FROM node:${NODE_VERSION} as client
 
 # Download dependencies as a separate step to take advantage of Docker's caching.
 # Leverage a cache mount to /root/.npm to speed up subsequent builds.
@@ -24,7 +24,7 @@ COPY ./client ./client
 
 RUN cd ./client && npm install && npm run build
 
-FROM node:${NODE_VERSION}-alpine
+FROM node:${NODE_VERSION}
 
 # Use production node environment by default.
 ENV NODE_ENV production
@@ -50,9 +50,6 @@ RUN rm -rf ./client
 # Copy the client build files into the server image.
 RUN mkdir -p ./client
 COPY --from=client /client/build ./client/build
-
-# Install OpenSSL.
-RUN apk add --no-cache openssl
 
 # Expose the port that the application listens on.
 EXPOSE 80
