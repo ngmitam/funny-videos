@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const responseTime = require("response-time");
+const { v4: uuidv4 } = require("uuid");
 
 const serverConfig = require("./config/serverConfig");
 
@@ -85,8 +86,12 @@ async function start(params) {
 	// process WebSocket message
 	// broadcast message to all connected clients except sender
 	const broadcastMessage = (message, email) => {
-		for (const key in clients) {
-			if (key !== email) clients[key].connection.sendUTF(message);
+		for (const userId in clients) {
+			if (userId !== email) {
+				for (const socketId in clients[userId]) {
+					clients[userId][socketId].sendUTF(message);
+				}
+			}
 		}
 	};
 
@@ -102,7 +107,7 @@ async function start(params) {
 		}
 		// verify token
 		const decoded = await verifyJWToken(accessToken.value);
-		if (!decoded) {
+		if (decoded?.error) {
 			request.reject();
 			return;
 		}
@@ -110,13 +115,20 @@ async function start(params) {
 		const userID = decoded.content.email;
 
 		const connection = request.accept(null, request.origin);
-		clients[userID] = {
-			connection,
-		};
+		const socketId = uuidv4();
+
+		// store user connection
+		if (!clients[userID]) clients[userID] = {};
+		clients[userID][socketId] = connection;
 
 		connection.on("close", function (connection) {
 			// close user connection
-			delete clients[userID];
+			delete clients[userID]?.[socketId];
+
+			// remove user from clients list
+			if (Object.keys(clients).length === 0) {
+				delete clients[userID];
+			}
 		});
 	});
 

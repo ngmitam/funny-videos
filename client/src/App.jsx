@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Container } from "@mui/material";
 import { ToastContainer } from "react-toastify";
+import { CookiesProvider } from "react-cookie";
 import "react-toastify/dist/ReactToastify.css";
 
 import WSConnection from "./ws_client/WSConnection";
@@ -10,29 +11,31 @@ import routes from "./routes";
 
 function App() {
 	return (
-		<WSConnection>
-			<Container sx={{ margin: "auto 10" }}>
-				{/* Header */}
-				<Header />
+		<CookiesProvider>
+			<WSConnection>
+				<Container sx={{ margin: "auto 10" }}>
+					{/* Header */}
+					<Header />
 
-				{/* Content */}
-				<Container sx={{ marginTop: "20px" }}>
-					<Routes>
-						{routes.map((route) => {
-							return (
-								<Route
-									key={route.id} // Replace key={index} with a unique identifier from the route object
-									path={route.path}
-									exact={route.exact}
-									element={route.main}
-								/>
-							);
-						})}
-					</Routes>
+					{/* Content */}
+					<Container sx={{ marginTop: "20px" }}>
+						<Routes>
+							{routes.map((route) => {
+								return (
+									<Route
+										key={route.id} // Replace key={index} with a unique identifier from the route object
+										path={route.path}
+										exact={route.exact}
+										element={route.main}
+									/>
+								);
+							})}
+						</Routes>
+					</Container>
+					<ToastContainer />
 				</Container>
-				<ToastContainer />
-			</Container>
-		</WSConnection>
+			</WSConnection>
+		</CookiesProvider>
 	);
 }
 

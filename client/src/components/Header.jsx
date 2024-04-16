@@ -33,9 +33,8 @@ export default function Header() {
 					res = await loginClient.login(email, password);
 				}
 			}
-			const url = window.location.origin.replace("http", "ws");
 			if (res?.body?.data)
-				dispatch(loginAction({ email, password, url }));
+				dispatch(loginAction({ email: res?.body?.data?.email }));
 			return;
 		} catch (err) {
 			console.error(err);
